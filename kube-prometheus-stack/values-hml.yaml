@@ -1,0 +1,35 @@
+grafana:
+  enabled: true
+
+  ingress:
+    enabled: true
+    ingressClassName: nginx-private
+    annotations:
+      nginx.ingress.kubernetes.io/rewrite-target: /
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTP"    # TLS é terminado no Load Balancer, ou seja: não precisa configurar tls: nos Ingress da stack.
+    hosts:
+      - grafana-hml.devopslabs.org
+    path: /
+    pathType: Prefix
+
+  service:
+    type: ClusterIP
+
+  persistence:
+    enabled: true
+    size: 2Gi
+
+  adminPassword: "admin"  # ou utilize secret externo
+
+prometheus:
+  prometheusSpec:
+    serviceMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorSelector: {}
+    podMonitorSelector: {}
+
+alertmanager:
+  enabled: false
+
+  ingress:
+    enabled: false  # Pode habilitar se quiser expor o Alertmanager
