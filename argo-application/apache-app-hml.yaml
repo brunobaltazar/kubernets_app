@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: apache-hml
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/brunobaltazar/kubernets_app.git
+    targetRevision: main
+    path: apache/hml
+    directory:
+      recurse: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: hml
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

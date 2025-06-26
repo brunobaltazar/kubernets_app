@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nginx-hml                   # Nome da aplicação no Argo CD
+  namespace: argocd                 # Namespace onde o Argo CD está instalado
+spec:
+  project: default                  # Nome do projeto Argo CD (padrão = default)
+
+  source:
+    repoURL: https://github.com/brunobaltazar/kubernets_app.git   # Repositório Git com os manifests
+    targetRevision: main                                          # Branch a ser usada (ex: main, develop)
+    path: nginx/hml                                               # Caminho dentro do repositório onde estão os manifests
+    directory:
+      recurse: true                                               # Aplica todos os YAMLs dentro da pasta (não precisa listar individualmente)
+
+  destination:
+    server: https://kubernetes.default.svc                      # Alvo padrão (cluster onde o Argo CD está rodando)
+    namespace: hml                                              # Namespace onde os recursos serão criados
+
+  syncPolicy:
+    automated:
+      prune: false         # ❗ Não remove recursos que estão fora do Git — importante para preservar o namespace "hml"
+      selfHeal: true       # ✅ Repara recursos automaticamente se forem modificados fora do Argo
+
+    syncOptions:
+      - CreateNamespace=true  # ✅ Cria o namespace automaticamente se ele ainda não existir (não afeta namespace já existente)
