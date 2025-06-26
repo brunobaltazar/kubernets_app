@@ -19,6 +19,7 @@ grafana:
   persistence:
     enabled: true
     size: 2Gi
+    storageClassName: gp2         # ✅ necessário!
 
   adminPassword: "admin"  # ou utilize secret externo
 
@@ -27,6 +28,15 @@ prometheus:
     serviceMonitorSelectorNilUsesHelmValues: false
     serviceMonitorSelector: {}
     podMonitorSelector: {}
+
+    storageSpec:                           # ✅ necessário!
+      volumeClaimTemplate:
+        spec:
+          storageClassName: gp2
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 10Gi
 
 alertmanager:
   enabled: false
