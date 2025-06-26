@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/brunobaltazar/kubernets_app.git
     targetRevision: main
-    path: kube-prometheus-stack/hml
+    path: kube-prometheus-stack             # ✅ Corrigido
     helm:
       valueFiles:
         - hml-values.yaml
