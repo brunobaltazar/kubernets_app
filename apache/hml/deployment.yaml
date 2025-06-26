@@ -1,78 +1,81 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: nginx-index-html
+  name: apache-index-html
   namespace: hml
 data:
   index.html: |
     <!DOCTYPE html>
     <html>
-    <head><title>hml NGINX</title></head>
-    <body><h1>🚀 NGINX rodando no ambiente de homologacao </h1></body>
+    <head><title>hml Apache</title></head>
+    <body><h1>🔥 Apache rodando no ambiente de homologação</h1></body>
     </html>
 
 ---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hml-nginx
+  name: hml-apache
   namespace: hml
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: hml-nginx
+      app: hml-apache
   template:
     metadata:
       labels:
-        app: hml-nginx
+        app: hml-apache
     spec:
       containers:
-        - name: nginx
-          image: nginx:stable-alpine
+        - name: apache
+          image: httpd:alpine
           ports:
             - containerPort: 80
           volumeMounts:
             - name: html-volume
-              mountPath: /usr/share/nginx/html
+              mountPath: /usr/local/apache2/htdocs
       volumes:
         - name: html-volume
           configMap:
-            name: nginx-index-html
+            name: apache-index-html
 
 ---
+
 apiVersion: v1
 kind: Service
 metadata:
-  name: hml-nginx
+  name: hml-apache
   namespace: hml
 spec:
   selector:
-    app: hml-nginx
+    app: hml-apache
   ports:
     - protocol: TCP
       port: 80
       targetPort: 80
   type: ClusterIP
 
-
 ---
+
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: hml-nginx
+  name: hml-apache
+  namespace: hml
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   ingressClassName: nginx-publico
   rules:
-    - host: hml-nginx.devopslabs.org
+    - host: hml-apache.devopslabs.org
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: hml-nginx
+                name: hml-apache
                 port:
                   number: 80
