@@ -17,5 +17,9 @@ spec:
     namespace: monitoring
   syncPolicy:
     automated:
-      prune: true
-      selfHeal: true
+      prune: false         # ❗ Não remove recursos que estão fora do Git — importante para preservar o namespace "hml"
+      selfHeal: true       # ✅ Repara recursos automaticamente se forem modificados fora do Argo
+
+    syncOptions:
+      - CreateNamespace=true  # ✅ Cria o namespace automaticamente se ele ainda não existir (não afeta namespace já existente)
+
