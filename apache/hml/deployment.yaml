@@ -67,7 +67,7 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
-  ingressClassName: nginx-publico
+  ingressClassName: nginx-internet
   rules:
     - host: hml-apache.devopslabs.org
       http:

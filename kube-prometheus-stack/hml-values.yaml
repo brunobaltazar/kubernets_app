@@ -3,43 +3,41 @@ grafana:
 
   ingress:
     enabled: true  # Ativa Ingress para acessar o Grafana via domínio
-    ingressClassName: nginx-private  # Define qual IngressClass deve ser usada (compatível com seu NGINX interno via ALB)
+    ingressClassName: nginx-internet
     annotations:
-      nginx.ingress.kubernetes.io/rewrite-target: /  # Redireciona todas as requisições para a raiz
-      nginx.ingress.kubernetes.io/ssl-redirect: "true"  # Força HTTPS no ALB
-      nginx.ingress.kubernetes.io/backend-protocol: "HTTP"  # Comunicação entre o ALB e o pod será via HTTP (TLS já foi terminado no Load Balancer)
+      nginx.ingress.kubernetes.io/rewrite-target: /
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
     hosts:
-      - grafana-hml.devopslabs.org  # Domínio que apontará para o serviço Grafana via ALB/Ingress
+      - grafana-hml.devopslabs.org
     path: /
-    pathType: Prefix  # Garante que todos os caminhos que comecem com "/" sejam roteados
+    pathType: Prefix
 
   service:
-    type: ClusterIP  # O serviço interno será do tipo ClusterIP (acessado via Ingress, não precisa IP externo)
+    type: ClusterIP
 
   persistence:
-    enabled: true  # Ativa armazenamento persistente (necessário para manter dashboards e configurações)
-    size: 2Gi  # Tamanho do volume persistente
-    storageClassName: gp2  # Define explicitamente o uso do storage class gp2 (AWS EBS)
+    enabled: false  # ❌ DESATIVADO: evita erro de PVC até resolver problemas com storageClass ou login no ArgoCD
 
-  adminPassword: "admin"  # Define senha do usuário admin. Ideal usar Secret externo em produção
+  adminPassword: "admin"  # ⚠️ Use um Secret externo em produção
 
 prometheus:
   prometheusSpec:
-    serviceMonitorSelectorNilUsesHelmValues: false  # Garante que apenas ServiceMonitors definidos no values.yaml sejam selecionados
-    serviceMonitorSelector: {}  # Permite monitorar todos os ServiceMonitors encontrados (sem filtro)
-    podMonitorSelector: {}  # Permite monitorar todos os PodMonitors encontrados (sem filtro)
+    serviceMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorSelector: {}
+    podMonitorSelector: {}
 
-    storageSpec:  # Define o volume persistente do Prometheus
-      volumeClaimTemplate:
-        spec:
-          storageClassName: gp2  # Utiliza a storageClass 'gp2' do EBS para armazenamento
-          accessModes: ["ReadWriteOnce"]  # Apenas um pod pode montar esse volume por vez
-          resources:
-            requests:
-              storage: 10Gi  # Tamanho do volume persistente
+    # ❌ DESATIVADO: Removido para evitar erro de PVC
+    # storageSpec:
+    #   volumeClaimTemplate:
+    #     spec:
+    #       storageClassName: gp2
+    #       accessModes: ["ReadWriteOnce"]
+    #       resources:
+    #         requests:
+    #           storage: 10Gi
 
 alertmanager:
-  enabled: false  # Desativa o Alertmanager por enquanto (pode ativar depois para envio de alertas)
-
+  enabled: false
   ingress:
-    enabled: false  # Mantém o Alertmanager sem Ingress (sem exposição externa por enquanto)
+    enabled: false
