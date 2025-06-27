@@ -7,8 +7,8 @@ data:
   index.html: |
     <!DOCTYPE html>
     <html>
-    <head><title>hml NGINX</title></head>
-    <body><h1>🚀 NGINX rodando no ambiente de homologacao </h1></body>
+    <head><title>hml nginx</title></head>
+    <body><h1> rodando no ambiente de homologacao </h1></body>
     </html>
 
 ---
