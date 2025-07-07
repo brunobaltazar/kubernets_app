@@ -7,8 +7,8 @@ data:
   index.html: |
     <!DOCTYPE html>
     <html>
-    <head><title>no que manda devops hml Apache</title></head>
-    <body><h1> Devops  Apache rodando no ambiente de homologacao</h1></body>
+    <head><title>devops hml Apache</title></head>
+    <body><h1> no que manda devops Devops  Apache rodando no ambiente de homologacao</h1></body>
     </html>
 
 ---
@@ -19,7 +19,7 @@ metadata:
   name: hml-apache
   namespace: hml
 spec:
-  replicas: 6
+  replicas: 1
   selector:
     matchLabels:
       app: hml-apache
